@@ -1,2 +1,2 @@
-export * from "./stepsNames";
-export * from "./defaultFormValues";
+export * from './stepsNames'
+export * from './defaultFormValues'
