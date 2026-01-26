@@ -1,13 +1,62 @@
 import './App.css'
+import { useForm, FormProvider } from 'react-hook-form'
+import { Box, Stepper, Step, StepLabel, Button } from '@mui/material'
+import { useState } from 'react'
+import { DEFAULT_FORM_VALUES, STEPS_NAMES } from './const'
+import { ClientInfoStep, OrderInfoStep, ProductsListStep } from './steps'
 
-function App() {
+export default function App() {
+  const [step, setStep] = useState(0)
+
+  const form = useForm({
+    mode: 'onChange',
+    defaultValues: DEFAULT_FORM_VALUES,
+    criteriaMode: 'all',
+  })
+
+  const isLastStep = step === STEPS_NAMES.length - 1
+  const isFirstStep = step === 0
+
+  const handleNext = async () => {
+    setStep((prev) => prev + 1)
+  }
+
+  const handleBack = () => {
+    setStep((prev) => prev - 1)
+  }
+
   return (
-    <>
-      <div>
-        <h1>React Hook Form Qualification Task</h1>
-      </div>
-    </>
+    <FormProvider {...form}>
+      <Box sx={{ maxWidth: '1200px', width: '100%', mx: 'auto', my: 4 }}>
+        <form>
+          <Stepper activeStep={step} alternativeLabel>
+            {STEPS_NAMES.map((label: string) => (
+              <Step key={label}>
+                <StepLabel>{label}</StepLabel>
+              </Step>
+            ))}
+          </Stepper>
+          <Box sx={{ mt: 4 }}>
+            {step === 0 && <ClientInfoStep />}
+            {step === 1 && <OrderInfoStep />}
+            {step === 2 && <ProductsListStep />}
+          </Box>
+          <Box sx={{ mt: 4, display: 'flex', justifyContent: 'space-between' }}>
+            {!isFirstStep ? <Button onClick={handleBack}>Back</Button> : null}
+            {isLastStep ? (
+              <Button variant="contained">Make Order</Button>
+            ) : (
+              <Button
+                variant="contained"
+                onClick={handleNext}
+                sx={{ marginLeft: 'auto' }}
+              >
+                Next
+              </Button>
+            )}
+          </Box>
+        </form>
+      </Box>
+    </FormProvider>
   )
 }
-
-export default App
