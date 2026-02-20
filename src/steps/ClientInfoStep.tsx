@@ -1,5 +1,5 @@
-import { Stack, Typography } from '@mui/material'
-import { ClientInfoForm } from '../components'
+import { Stack, Typography } from '@mui/material';
+import { ClientInfoForm } from '../components';
 
 export const ClientInfoStep = () => {
   return (
@@ -7,5 +7,5 @@ export const ClientInfoStep = () => {
       <Typography variant="h5">Personal Info</Typography>
       <ClientInfoForm />
     </Stack>
-  )
-}
+  );
+};

@@ -1,35 +1,35 @@
-import './App.css'
-import { useForm, FormProvider } from 'react-hook-form'
-import { Box, Stepper, Step, StepLabel, Button } from '@mui/material'
-import { useState } from 'react'
-import { DEFAULT_FORM_VALUES, fieldsByStep, STEPS_NAMES } from './const'
-import { ClientInfoStep, OrderInfoStep, ProductsListStep } from './steps'
+import './App.css';
+import { useForm, FormProvider } from 'react-hook-form';
+import { Box, Stepper, Step, StepLabel, Button } from '@mui/material';
+import { useState } from 'react';
+import { DEFAULT_FORM_VALUES, fieldsByStep, STEPS_NAMES } from './const';
+import { ClientInfoStep, OrderInfoStep, ProductsListStep } from './steps';
 
 export default function App() {
-  const [step, setStep] = useState(0)
+  const [step, setStep] = useState(0);
 
   const form = useForm({
     mode: 'onChange',
     defaultValues: DEFAULT_FORM_VALUES,
     criteriaMode: 'all',
-  })
+  });
 
-  const { trigger } = form
+  const { trigger } = form;
 
-  const isLastStep = step === STEPS_NAMES.length - 1
-  const isFirstStep = step === 0
+  const isLastStep = step === STEPS_NAMES.length - 1;
+  const isFirstStep = step === 0;
 
   const handleNext = async () => {
-    const fields = fieldsByStep[step]
-    const valid = await trigger(fields)
+    const fields = fieldsByStep[step];
+    const valid = await trigger(fields);
     if (valid) {
-      setStep((prev) => prev + 1)
+      setStep((prev) => prev + 1);
     }
-  }
+  };
 
   const handleBack = () => {
-    setStep((prev) => prev - 1)
-  }
+    setStep((prev) => prev - 1);
+  };
 
   return (
     <FormProvider {...form}>
@@ -64,5 +64,5 @@ export default function App() {
         </form>
       </Box>
     </FormProvider>
-  )
+  );
 }

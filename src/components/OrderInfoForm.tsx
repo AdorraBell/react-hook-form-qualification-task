@@ -4,25 +4,25 @@ import {
   InputLabel,
   FormControl,
   FormHelperText,
-} from '@mui/material'
+} from '@mui/material';
 import {
   LocalizationProvider,
   DatePicker,
   TimePicker,
-} from '@mui/x-date-pickers'
-import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
-import { FormDataType } from '../types'
-import { useFormContext, Controller, useFormState } from 'react-hook-form'
-import { paymentMethods } from '../const'
-import { VALIDATION } from '../utils'
+} from '@mui/x-date-pickers';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { FormDataType } from '../types';
+import { useFormContext, Controller, useFormState } from 'react-hook-form';
+import { paymentMethods } from '../const';
+import { VALIDATION } from '../utils';
 
 export const OrderInfoForm = () => {
-  const { control } = useFormContext<FormDataType>()
+  const { control } = useFormContext<FormDataType>();
 
   const { errors } = useFormState({
     control,
     name: ['deliveryDate', 'deliveryTime', 'paymentMethod', 'shippingMethod'],
-  })
+  });
 
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns}>
@@ -108,5 +108,5 @@ export const OrderInfoForm = () => {
         )}
       />
     </LocalizationProvider>
-  )
-}
+  );
+};

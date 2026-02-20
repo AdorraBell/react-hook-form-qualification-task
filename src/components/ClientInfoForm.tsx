@@ -1,16 +1,16 @@
-import { useFormContext, useFormState, useWatch } from 'react-hook-form'
-import { TextField, Typography } from '@mui/material'
-import { FormDataType } from '../types'
-import { VALIDATION } from '../utils'
+import { useFormContext, useFormState, useWatch } from 'react-hook-form';
+import { TextField, Typography } from '@mui/material';
+import { FormDataType } from '../types';
+import { VALIDATION } from '../utils';
 
 export const ClientInfoForm = () => {
-  const { register, control } = useFormContext<FormDataType>()
+  const { register, control } = useFormContext<FormDataType>();
   const { errors } = useFormState({
     control,
     name: ['name', 'email', 'phone', 'address'],
-  })
+  });
 
-  const comment = useWatch({ control, name: 'comment' })
+  const comment = useWatch({ control, name: 'comment' });
 
   return (
     <>
@@ -76,5 +76,5 @@ export const ClientInfoForm = () => {
         </Typography>
       ) : null}
     </>
-  )
-}
+  );
+};

@@ -8,4 +8,4 @@ export const DEFAULT_FORM_VALUES = {
   deliveryTime: null,
   paymentMethod: 'cash',
   shippingMethod: 'pickup',
-}
+};

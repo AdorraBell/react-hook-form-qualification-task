@@ -1,2 +1,2 @@
-export * from './ClientInfoForm'
-export * from './OrderInfoForm'
+export * from './ClientInfoForm';
+export * from './OrderInfoForm';

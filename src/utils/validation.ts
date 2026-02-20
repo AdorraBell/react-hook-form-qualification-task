@@ -3,10 +3,10 @@ export const VALIDATION = {
     required: 'Name is required',
     validate: (value: string | null | undefined) => {
       if (value && value.trim().length === 0) {
-        return 'This field cannot contain only spaces'
+        return 'This field cannot contain only spaces';
       }
       if (value && value.trim().length < 2) {
-        return 'Name must be at least 2 characters long'
+        return 'Name must be at least 2 characters long';
       }
     },
   },
@@ -28,10 +28,10 @@ export const VALIDATION = {
     required: 'Address is required',
     validate: (value: string | null | undefined) => {
       if (value && value.trim().length === 0) {
-        return 'This field cannot contain only spaces'
+        return 'This field cannot contain only spaces';
       }
       if (value && value.trim().length < 10) {
-        return 'Minimum 10 characters'
+        return 'Minimum 10 characters';
       }
     },
   },
@@ -47,4 +47,4 @@ export const VALIDATION = {
   shippingMethod: {
     required: 'Select a shipping method',
   },
-}
+};
