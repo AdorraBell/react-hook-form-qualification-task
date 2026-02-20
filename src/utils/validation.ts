@@ -35,4 +35,16 @@ export const VALIDATION = {
       }
     },
   },
+  deliveryDate: {
+    required: 'Select a delivery date',
+  },
+  deliveryTime: {
+    required: 'Select a delivery time',
+  },
+  paymentMethod: {
+    required: 'Select a payment method',
+  },
+  shippingMethod: {
+    required: 'Select a shipping method',
+  },
 }

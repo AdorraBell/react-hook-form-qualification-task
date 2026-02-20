@@ -2,7 +2,7 @@ import './App.css'
 import { useForm, FormProvider } from 'react-hook-form'
 import { Box, Stepper, Step, StepLabel, Button } from '@mui/material'
 import { useState } from 'react'
-import { DEFAULT_FORM_VALUES, STEPS_NAMES } from './const'
+import { DEFAULT_FORM_VALUES, fieldsByStep, STEPS_NAMES } from './const'
 import { ClientInfoStep, OrderInfoStep, ProductsListStep } from './steps'
 
 export default function App() {
@@ -14,11 +14,17 @@ export default function App() {
     criteriaMode: 'all',
   })
 
+  const { trigger } = form
+
   const isLastStep = step === STEPS_NAMES.length - 1
   const isFirstStep = step === 0
 
   const handleNext = async () => {
-    setStep((prev) => prev + 1)
+    const fields = fieldsByStep[step]
+    const valid = await trigger(fields)
+    if (valid) {
+      setStep((prev) => prev + 1)
+    }
   }
 
   const handleBack = () => {
@@ -27,7 +33,7 @@ export default function App() {
 
   return (
     <FormProvider {...form}>
-      <Box sx={{ maxWidth: '1200px', width: '100%', mx: 'auto', my: 4 }}>
+      <Box sx={{ maxWidth: '1200px', width: '100%', mx: 'auto', my: 4, px: 4 }}>
         <form>
           <Stepper activeStep={step} alternativeLabel>
             {STEPS_NAMES.map((label: string) => (
