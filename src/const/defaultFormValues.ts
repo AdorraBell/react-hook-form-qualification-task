@@ -1,0 +1,20 @@
+export const DEFAULT_FORM_VALUES = {
+  name: '',
+  email: '',
+  phone: '',
+  address: '',
+  comment: '',
+  deliveryDate: null,
+  deliveryTime: null,
+  paymentMethod: 'cash',
+  shippingMethod: 'pickup',
+  products: null,
+  draftProduct: {
+    name: '',
+    priceForOne: 1,
+    description: '',
+    category: '',
+    count: 1,
+  },
+  orderSum: 0,
+};
