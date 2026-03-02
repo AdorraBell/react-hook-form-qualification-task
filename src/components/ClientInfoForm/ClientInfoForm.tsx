@@ -1,7 +1,7 @@
 import { useFormContext, useFormState, useWatch } from 'react-hook-form';
 import { TextField, Typography } from '@mui/material';
-import { FormDataType } from '../types';
-import { VALIDATION } from '../utils';
+import { FormDataType } from '../../types';
+import { VALIDATION } from '../../utils';
 
 export const ClientInfoForm = () => {
   const { register, control } = useFormContext<FormDataType>();

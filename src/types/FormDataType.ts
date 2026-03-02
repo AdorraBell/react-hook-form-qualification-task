@@ -13,4 +13,20 @@ export type orderInfoDataType = {
   shippingMethod: 'courier' | 'pickup' | 'postal';
 };
 
-export type FormDataType = clientInfoDataType & orderInfoDataType;
+export type productCardDataType = {
+  name: string;
+  priceForOne: number;
+  description: string;
+  category: string;
+  count: number;
+};
+
+export type productsListDataType = {
+  products: productCardDataType[] | null;
+  draftProduct: productCardDataType;
+  orderSum: number;
+};
+
+export type FormDataType = clientInfoDataType &
+  orderInfoDataType &
+  productsListDataType;
