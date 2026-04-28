@@ -1,4 +1,6 @@
-export const DEFAULT_FORM_VALUES = {
+import { FormDataType } from '../types';
+
+export const DEFAULT_FORM_VALUES: Partial<FormDataType> = {
   name: '',
   email: '',
   phone: '',
