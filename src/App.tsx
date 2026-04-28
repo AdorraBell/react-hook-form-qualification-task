@@ -1,34 +1,45 @@
 import './App.css';
 import { useForm, FormProvider } from 'react-hook-form';
-import { Box, Stepper, Step, StepLabel, Button } from '@mui/material';
-import { useState } from 'react';
+import { Box, Stepper, Step, StepLabel } from '@mui/material';
+import { useState, useCallback } from 'react';
 import { DEFAULT_FORM_VALUES, fieldsByStep, STEPS_NAMES } from './const';
 import { ClientInfoStep, OrderInfoStep, ProductsListStep } from './steps';
+import { ApproveOrderModal, FormActions } from './components';
+import { FormDataType } from './types';
 
 export default function App() {
   const [step, setStep] = useState(0);
+  const [showApproveModal, setShowApproveModal] = useState(false);
 
-  const form = useForm({
+  const form = useForm<FormDataType>({
     mode: 'onChange',
     defaultValues: DEFAULT_FORM_VALUES,
     criteriaMode: 'all',
   });
 
-  const { trigger } = form;
+  const { trigger, handleSubmit } = form;
 
   const isLastStep = step === STEPS_NAMES.length - 1;
   const isFirstStep = step === 0;
 
-  const handleNext = async () => {
+  const handleNext = useCallback(async () => {
     const fields = fieldsByStep[step];
     const valid = await trigger(fields);
     if (valid) {
       setStep((prev) => prev + 1);
     }
-  };
+  }, [step, trigger]);
 
-  const handleBack = () => {
+  const handleBack = useCallback(() => {
     setStep((prev) => prev - 1);
+  }, []);
+
+  const handleMakeOrder = useCallback(() => {
+    setShowApproveModal(true);
+  }, []);
+
+  const onSubmit = async () => {
+    setShowApproveModal(false);
   };
 
   return (
@@ -47,20 +58,18 @@ export default function App() {
             {step === 1 && <OrderInfoStep />}
             {step === 2 && <ProductsListStep />}
           </Box>
-          <Box sx={{ mt: 4, display: 'flex', justifyContent: 'space-between' }}>
-            {!isFirstStep ? <Button onClick={handleBack}>Back</Button> : null}
-            {isLastStep ? (
-              <Button variant="contained">Make Order</Button>
-            ) : (
-              <Button
-                variant="contained"
-                onClick={handleNext}
-                sx={{ marginLeft: 'auto' }}
-              >
-                Next
-              </Button>
-            )}
-          </Box>
+          <FormActions
+            isFirstStep={isFirstStep}
+            isLastStep={isLastStep}
+            onBack={handleBack}
+            onNext={handleNext}
+            onMakeOrder={handleMakeOrder}
+          />
+          <ApproveOrderModal
+            showModal={showApproveModal}
+            closeModal={() => setShowApproveModal(false)}
+            confirmOrder={handleSubmit(onSubmit)}
+          />
         </form>
       </Box>
     </FormProvider>

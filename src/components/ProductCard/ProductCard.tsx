@@ -5,7 +5,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 
 interface ProductCardProps {
   data: productCardDataType;
-  onDelete: () => void;
+  onDelete?: () => void;
   dragHandleProps?: React.HTMLAttributes<HTMLElement>;
 }
 
