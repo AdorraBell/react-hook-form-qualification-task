@@ -126,7 +126,7 @@ export const ProductsListForm = () => {
       {showForm ? (
         <>
           <Box sx={{ mt: 4 }}>
-            <ProductItemForm/>
+            <ProductItemForm />
           </Box>
           <Box sx={{ mt: 4, display: 'flex', justifyContent: 'space-between' }}>
             <Button onClick={() => setShowForm(false)}>Cancel</Button>
