@@ -30,7 +30,7 @@ export const FormActions = ({
           onClick={onMakeOrder}
           disabled={!hasProducts}
         >
-          Make Order
+          Place Order
         </Button>
       ) : (
         <Button

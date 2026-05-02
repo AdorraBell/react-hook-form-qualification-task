@@ -21,7 +21,7 @@ export const VALIDATION = {
     required: 'Please enter your phone number',
     pattern: {
       value: /^\+1\d{3}\d{3}\d{2}\d{2}$/i,
-      message: 'Please enter a valid phone number (+1XXXXXXXXXX)',
+      message: 'Please enter a valid phone number (e.g. +10005550100)',
     },
   },
   address: {
