@@ -36,7 +36,7 @@ export const ClientInfoForm = () => {
 
       <TextField
         label="Phone number *"
-        placeholder="+7 XXX XXX XX XX"
+        placeholder="+1XXXXXXXXXX"
         fullWidth
         variant="outlined"
         {...register('phone', VALIDATION.phone)}

@@ -8,3 +8,5 @@ export * from './ProductsListForm';
 export * from './DraggableCard';
 export * from './RemoveProductModal';
 export * from './ApproveOrderModal';
+export * from './LoaderWithBackground';
+export * from './OrderSuccessfullyCompleted';

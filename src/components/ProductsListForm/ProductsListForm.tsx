@@ -146,9 +146,7 @@ export const ProductsListForm = () => {
             Add
           </Button>
           {products.length === 20 ? (
-            <Typography color="#ff9800">
-              The maximum allowed number of items is 20
-            </Typography>
+            <Typography color="#ff9800">You can add up to 20 items</Typography>
           ) : null}
         </>
       )}
