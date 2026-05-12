@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Button, Box, Typography } from '@mui/material';
 import { useFormContext, useFieldArray } from 'react-hook-form';
 import { ProductItemForm } from '../ProductItemForm';
@@ -16,7 +16,13 @@ import { SortableContext } from '@dnd-kit/sortable';
 import { DraggableCard } from '../DraggableCard';
 import { RemoveProductModal } from '../RemoveProductModal';
 
-export const ProductsListForm = () => {
+interface ProductsListFormProps {
+  isApproveModalOpen: boolean;
+}
+
+export const ProductsListForm = ({
+  isApproveModalOpen,
+}: ProductsListFormProps) => {
   const { control, trigger, getValues, setValue } =
     useFormContext<FormDataType>();
 
@@ -105,6 +111,10 @@ export const ProductsListForm = () => {
     }
     updateOrderSum();
   };
+
+  useEffect(() => {
+    if (isApproveModalOpen) setShowForm(false);
+  }, [isApproveModalOpen]);
 
   return (
     <DndContext

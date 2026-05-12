@@ -36,13 +36,14 @@ export default function App() {
     const formData = getValues();
     /* fake request */
     const response = await sendData(formData, 1500);
+    setShowLoader(false);
     if (response.status === 200) {
       /* can't go past step 3 */
       if (step !== 2) setStep((prev) => prev + 1);
-    } else {
-      setShowAlert(true);
+      return true;
     }
-    setShowLoader(false);
+    setShowAlert(true);
+    return false;
   };
 
   const handleNext = async () => {
@@ -60,8 +61,8 @@ export default function App() {
   };
 
   const handleMakeOrder = async () => {
-    await handleFakeSaveData();
-    setShowApproveModal(true);
+    const success = await handleFakeSaveData();
+    if (success) setShowApproveModal(true);
   };
 
   const onSubmit = async () => {
@@ -110,7 +111,9 @@ export default function App() {
           <Box sx={{ mt: 4 }}>
             {step === 0 && <ClientInfoStep />}
             {step === 1 && <OrderInfoStep />}
-            {step === 2 && <ProductsListStep />}
+            {step === 2 && (
+              <ProductsListStep isApproveModalOpen={showApproveModal} />
+            )}
           </Box>
           <FormActions
             isFirstStep={isFirstStep}

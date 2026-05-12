@@ -16,10 +16,11 @@ import {
 } from 'react-hook-form';
 import { FormDataType } from '../../types';
 import { NEW_ITEM_PREFIX, productCategory } from '../../const';
-import { VALIDATION } from '../../utils';
+import { useValidationRules } from '../../hooks';
 
 export const ProductItemForm = () => {
   const { control, register } = useFormContext<FormDataType>();
+  const VALIDATION = useValidationRules();
   const { errors } = useFormState({
     control,
     name: [
