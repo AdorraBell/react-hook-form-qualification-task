@@ -1,7 +1,7 @@
 import './App.css';
 import { useForm, FormProvider } from 'react-hook-form';
 import { Box, Stepper, Step, StepLabel, Snackbar, Alert } from '@mui/material';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { DEFAULT_FORM_VALUES, fieldsByStep, STEPS_NAMES } from './const';
 import { ClientInfoStep, OrderInfoStep, ProductsListStep } from './steps';
 import {
@@ -13,6 +13,8 @@ import {
 import { FormDataType } from './types';
 import { sendData } from './utils';
 
+const LOCAL_STORAGE_KEY = 'savedOrderForm';
+
 export default function App() {
   const [step, setStep] = useState(0);
   const [showApproveModal, setShowApproveModal] = useState(false);
@@ -20,13 +22,35 @@ export default function App() {
   const [showLoader, setShowLoader] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
 
+  const [parsedFormData] = useState<FormDataType | null>(() => {
+    const savedFormData = localStorage.getItem(LOCAL_STORAGE_KEY);
+
+    if (!savedFormData) {
+      return null;
+    }
+    try {
+      const parsed = JSON.parse(savedFormData);
+      return {
+        ...parsed,
+        deliveryDate: parsed.deliveryDate
+          ? new Date(parsed.deliveryDate)
+          : null,
+        deliveryTime: parsed.deliveryTime
+          ? new Date(parsed.deliveryTime)
+          : null,
+      };
+    } catch {
+      return null;
+    }
+  });
+
   const form = useForm<FormDataType>({
     mode: 'onChange',
-    defaultValues: DEFAULT_FORM_VALUES,
+    defaultValues: parsedFormData || DEFAULT_FORM_VALUES,
     criteriaMode: 'all',
   });
 
-  const { trigger, handleSubmit, getValues } = form;
+  const { trigger, handleSubmit, getValues, reset } = form;
 
   const isLastStep = step === STEPS_NAMES.length - 1;
   const isFirstStep = step === 0;
@@ -38,6 +62,10 @@ export default function App() {
     const response = await sendData(formData, 1500);
     setShowLoader(false);
     if (response.status === 200) {
+      /* save values to localStorage on step change */
+      const currentValues = getValues();
+      const asString = JSON.stringify(currentValues);
+      localStorage.setItem(LOCAL_STORAGE_KEY, asString);
       /* can't go past step 3 */
       if (step !== 2) setStep((prev) => prev + 1);
       return true;
@@ -72,6 +100,9 @@ export default function App() {
     /* fake request */
     const response = await sendData(formData, 1500);
     if (response.status === 200) {
+      /* clear data */
+      localStorage.removeItem(LOCAL_STORAGE_KEY);
+      reset(DEFAULT_FORM_VALUES);
       setStep(0);
       /* order completed state */
       setShowOrderCompletedState(true);
@@ -80,6 +111,16 @@ export default function App() {
     }
     setShowLoader(false);
   };
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const currentValues = getValues();
+      const asString = JSON.stringify(currentValues);
+      localStorage.setItem(LOCAL_STORAGE_KEY, asString);
+    }, 30000);
+
+    return () => clearInterval(interval);
+  }, [getValues]);
 
   if (showOrderCompletedState)
     return (
