@@ -12,17 +12,52 @@ import {
 } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { FormDataType } from '../../types';
-import { useFormContext, Controller, useFormState } from 'react-hook-form';
+import { useCallback } from 'react';
+import {
+  useFormContext,
+  Controller,
+  useFormState,
+  useWatch,
+} from 'react-hook-form';
 import { paymentMethods } from '../../const';
-import { VALIDATION } from '../../utils';
+import { useValidationRules } from '../../hooks';
 
 export const OrderInfoForm = () => {
-  const { control } = useFormContext<FormDataType>();
+  const { control, trigger } = useFormContext<FormDataType>();
+  const VALIDATION = useValidationRules();
 
   const { errors } = useFormState({
     control,
     name: ['deliveryDate', 'deliveryTime', 'paymentMethod', 'shippingMethod'],
   });
+
+  const deliveryDate = useWatch({
+    control,
+    name: 'deliveryDate',
+  });
+
+  const isWeekend = deliveryDate
+    ? [0, 6].includes(new Date(deliveryDate).getDay())
+    : false;
+
+  const shouldDisableDeliveryTime = useCallback(
+    (time: Date, view: 'hours' | 'minutes' | 'seconds') => {
+      if (!isWeekend) return false;
+
+      const hour = time.getHours();
+
+      if (view === 'hours') {
+        return hour < 11 || hour > 13;
+      }
+      /* allow 13:00 exactly — disable 13:01 and beyond */
+      if (view === 'minutes' && hour === 13) {
+        return time.getMinutes() > 0;
+      }
+
+      return false;
+    },
+    [isWeekend],
+  );
 
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns}>
@@ -33,6 +68,10 @@ export const OrderInfoForm = () => {
         render={({ field }) => (
           <DatePicker
             {...field}
+            onChange={(date) => {
+              field.onChange(date);
+              trigger('deliveryTime');
+            }}
             label="Delivery date"
             slotProps={{
               textField: {
@@ -55,6 +94,7 @@ export const OrderInfoForm = () => {
             ampm={false}
             minTime={new Date(0, 0, 0, 9, 0)}
             maxTime={new Date(0, 0, 0, 21, 0)}
+            shouldDisableTime={shouldDisableDeliveryTime}
             slotProps={{
               textField: {
                 error: !!errors.deliveryTime,
