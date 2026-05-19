@@ -68,7 +68,7 @@ export const ProductItemForm = () => {
         rules={VALIDATION.productCategory}
         render={({ field }) => (
           <FormControl fullWidth error={!!errors?.[NEW_ITEM_PREFIX]?.category}>
-            <InputLabel>Category</InputLabel>
+            <InputLabel>Category *</InputLabel>
             <Select {...field} label="Category">
               {productCategory.map(({ value, text }) => (
                 <MenuItem key={value} value={value}>

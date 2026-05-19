@@ -78,14 +78,15 @@ export const ApproveOrderModal = ({
           <Box
             sx={{ mt: 3, mb: 3, bgcolor: '#f5f5f5', borderRadius: '4px', p: 2 }}
           >
-            <>
-              <Typography variant="h6">Your order:</Typography>
-              {products?.map((item, index) => (
-                <ProductCard key={index} data={item as productCardDataType} />
-              ))}
-            </>
+            <Typography variant="h6">Your order:</Typography>
+            {products?.map((item, index) => (
+              <ProductCard
+                key={`${item.name}-${index}`}
+                data={item as productCardDataType}
+              />
+            ))}
           </Box>
-          <Typography variant="h6">Order total: {orderSum} ₽</Typography>
+          <Typography variant="h6">Order total: ${orderSum}</Typography>
         </Stack>
       </DialogContent>
       <DialogActions>

@@ -47,7 +47,11 @@ export const OrderInfoForm = () => {
       const hour = time.getHours();
 
       if (view === 'hours') {
-        return hour < 11 || hour >= 13;
+        return hour < 11 || hour > 13;
+      }
+      /* allow 13:00 exactly — disable 13:01 and beyond */
+      if (view === 'minutes' && hour === 13) {
+        return time.getMinutes() > 0;
       }
 
       return false;

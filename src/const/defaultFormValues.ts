@@ -10,7 +10,7 @@ export const DEFAULT_FORM_VALUES: Partial<FormDataType> = {
   deliveryTime: null,
   paymentMethod: 'cash',
   shippingMethod: 'pickup',
-  products: null,
+  products: [],
   draftProduct: {
     name: '',
     priceForOne: 1,

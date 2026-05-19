@@ -14,39 +14,45 @@ import { FormDataType } from './types';
 import { sendData } from './utils';
 
 const LOCAL_STORAGE_KEY = 'savedOrderForm';
+const LOCAL_STORAGE_STEP_KEY = 'savedOrderFormStep';
 
 export default function App() {
-  const [step, setStep] = useState(0);
+  const [savedSession] = useState<{
+    formData: FormDataType | null;
+    step: number;
+  }>(() => {
+    const raw = localStorage.getItem(LOCAL_STORAGE_KEY);
+    const savedStep = localStorage.getItem(LOCAL_STORAGE_STEP_KEY);
+    if (!raw) return { formData: null, step: 0 };
+    try {
+      const parsed = JSON.parse(raw);
+      return {
+        formData: {
+          ...parsed,
+          deliveryDate: parsed.deliveryDate
+            ? new Date(parsed.deliveryDate)
+            : null,
+          deliveryTime: parsed.deliveryTime
+            ? new Date(parsed.deliveryTime)
+            : null,
+        },
+        step: savedStep ? Number(savedStep) : 0,
+      };
+    } catch {
+      return { formData: null, step: 0 };
+    }
+  });
+
+  const [step, setStep] = useState(savedSession.step);
+
   const [showApproveModal, setShowApproveModal] = useState(false);
   const [showOrderCompletedState, setShowOrderCompletedState] = useState(false);
   const [showLoader, setShowLoader] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
 
-  const [parsedFormData] = useState<FormDataType | null>(() => {
-    const savedFormData = localStorage.getItem(LOCAL_STORAGE_KEY);
-
-    if (!savedFormData) {
-      return null;
-    }
-    try {
-      const parsed = JSON.parse(savedFormData);
-      return {
-        ...parsed,
-        deliveryDate: parsed.deliveryDate
-          ? new Date(parsed.deliveryDate)
-          : null,
-        deliveryTime: parsed.deliveryTime
-          ? new Date(parsed.deliveryTime)
-          : null,
-      };
-    } catch {
-      return null;
-    }
-  });
-
   const form = useForm<FormDataType>({
     mode: 'onChange',
-    defaultValues: parsedFormData || DEFAULT_FORM_VALUES,
+    defaultValues: savedSession.formData || DEFAULT_FORM_VALUES,
     criteriaMode: 'all',
   });
 
@@ -62,12 +68,7 @@ export default function App() {
     const response = await sendData(formData, 1500);
     setShowLoader(false);
     if (response.status === 200) {
-      /* save values to localStorage on step change */
-      const currentValues = getValues();
-      const asString = JSON.stringify(currentValues);
-      localStorage.setItem(LOCAL_STORAGE_KEY, asString);
-      /* can't go past step 3 */
-      if (step !== 2) setStep((prev) => prev + 1);
+      localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(formData));
       return true;
     }
     setShowAlert(true);
@@ -79,8 +80,12 @@ export default function App() {
     /* await is needed because we wait for trigger results —
     it returns a promise and without await it will always be true */
     const valid = await trigger(fields);
-    if (valid) {
-      await handleFakeSaveData();
+    if (!valid) return;
+    const nextStep = step + 1;
+    const success = await handleFakeSaveData();
+    if (success) {
+      localStorage.setItem(LOCAL_STORAGE_STEP_KEY, String(nextStep));
+      setStep(nextStep);
     }
   };
 
@@ -90,11 +95,13 @@ export default function App() {
 
   const handleMakeOrder = async () => {
     const success = await handleFakeSaveData();
-    if (success) setShowApproveModal(true);
+    if (success) {
+      localStorage.setItem(LOCAL_STORAGE_STEP_KEY, String(step));
+      setShowApproveModal(true);
+    }
   };
 
   const onSubmit = async () => {
-    setShowApproveModal(false);
     setShowLoader(true);
     const formData = getValues();
     /* fake request */
@@ -102,10 +109,12 @@ export default function App() {
     if (response.status === 200) {
       /* clear data */
       localStorage.removeItem(LOCAL_STORAGE_KEY);
+      localStorage.removeItem(LOCAL_STORAGE_STEP_KEY);
       reset(DEFAULT_FORM_VALUES);
       setStep(0);
       /* order completed state */
       setShowOrderCompletedState(true);
+      setShowApproveModal(false);
     } else {
       setShowAlert(true);
     }
@@ -115,8 +124,7 @@ export default function App() {
   useEffect(() => {
     const interval = setInterval(() => {
       const currentValues = getValues();
-      const asString = JSON.stringify(currentValues);
-      localStorage.setItem(LOCAL_STORAGE_KEY, asString);
+      localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(currentValues));
     }, 30000);
 
     return () => clearInterval(interval);
@@ -136,12 +144,13 @@ export default function App() {
           open={showAlert}
           autoHideDuration={6000}
           onClose={() => setShowAlert(false)}
+          anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
         >
           <Alert severity="error" onClose={() => setShowAlert(false)}>
             Something went wrong. Please try again.
           </Alert>
         </Snackbar>
-        <form>
+        <form noValidate>
           <Stepper activeStep={step} alternativeLabel>
             {STEPS_NAMES.map((label: string) => (
               <Step key={label}>

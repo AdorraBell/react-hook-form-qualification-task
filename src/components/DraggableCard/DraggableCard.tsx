@@ -23,7 +23,7 @@ export const DraggableCard = ({ id, children }: DraggableCardProps) => {
   if (!isValidElement(children)) return null;
 
   return (
-    <Card ref={setNodeRef} {...attributes} sx={style}>
+    <Card ref={setNodeRef} sx={style}>
       {cloneElement(children, {
         // override props to add dragHandleProps to the passed child element
         dragHandleProps: { ...listeners, ...attributes },

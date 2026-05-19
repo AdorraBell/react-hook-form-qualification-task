@@ -72,16 +72,18 @@ export const useValidationRules = () => {
         if (!date) return 'Please select a delivery date first';
         /* 0 is Sunday, 6 is Saturday */
         const day = new Date(date).getDay();
-        /* weekend */
+        /* weekend — 13:00 exactly is valid, matching the message */
         if (day === 0 || day === 6) {
+          const minutes = value.getMinutes();
           return (
-            (hour >= 11 && hour < 13) ||
+            (hour >= 11 && (hour < 13 || (hour === 13 && minutes === 0))) ||
             'Weekend delivery is only available from 11:00 to 13:00'
           );
         }
-        /* weekday */
+        /* weekday — 21:00 exactly is valid, matching the picker's maxTime */
+        const minutes = value.getMinutes();
         return (
-          (hour >= 9 && hour < 21) ||
+          (hour >= 9 && (hour < 21 || (hour === 21 && minutes === 0))) ||
           'Delivery time must be between 09:00 and 21:00'
         );
       },
@@ -105,6 +107,7 @@ export const useValidationRules = () => {
     },
     productCount: {
       required: 'Please enter a quantity',
+      valueAsNumber: true,
       validate: (value: number) => {
         if (value < 0) return 'Quantity cannot be negative';
         /* Using validate instead of min/max so we can show
@@ -116,6 +119,7 @@ export const useValidationRules = () => {
     },
     priceForOne: {
       required: 'Please enter a price',
+      valueAsNumber: true,
       validate: (value: number) => {
         if (value < 0) return 'Price cannot be negative';
         /* Using validate instead of min/max so we can show

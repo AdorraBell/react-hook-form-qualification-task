@@ -4,6 +4,7 @@ import { useFormContext, useFieldArray } from 'react-hook-form';
 import { ProductItemForm } from '../ProductItemForm';
 import { FormDataType, productCardDataType } from '../../types';
 import { ProductCard } from '../ProductCard';
+import { NEW_ITEM_PREFIX } from '../../const';
 import {
   DndContext,
   closestCenter,
@@ -57,8 +58,6 @@ export const ProductsListForm = ({
     [products, setValue],
   );
 
-  const newItemPrefix = 'draftProduct';
-
   const updateOrderSum = () => {
     const products = getValues('products') as productCardDataType[];
     if (!products?.length) {
@@ -77,17 +76,17 @@ export const ProductsListForm = ({
 
   const handleSaveDraft = async () => {
     const isValid = await trigger([
-      `${newItemPrefix}.name`,
-      `${newItemPrefix}.count`,
-      `${newItemPrefix}.priceForOne`,
-      `${newItemPrefix}.category`,
+      `${NEW_ITEM_PREFIX}.name`,
+      `${NEW_ITEM_PREFIX}.count`,
+      `${NEW_ITEM_PREFIX}.priceForOne`,
+      `${NEW_ITEM_PREFIX}.category`,
     ]);
     if (!isValid) return;
 
-    const draft = getValues(newItemPrefix);
+    const draft = getValues(NEW_ITEM_PREFIX);
     append(draft);
 
-    setValue(newItemPrefix, {
+    setValue(NEW_ITEM_PREFIX, {
       name: '',
       count: 1,
       priceForOne: 1,
